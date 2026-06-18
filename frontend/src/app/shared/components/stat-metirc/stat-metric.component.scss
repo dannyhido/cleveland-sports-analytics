@@ -1,0 +1,64 @@
+.stat-metric-card {
+  border-radius: 8px;
+  border-left: 4px solid #3f51b5; /* Fallback default core color */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+  padding: 16px;
+
+  .metric-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .metric-label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.75px;
+        color: rgba(0, 0, 0, 0.6);
+      }
+
+      /* Trend color modifiers based on runtime metrics */
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+
+        &.trend-positive {
+          color: #4caf50; /* Production Green */
+        }
+        &.trend-negative {
+          color: #f44336; /* Production Red */
+        }
+        &.trend-neutral {
+          color: #9e9e9e; /* Muted Grey */
+        }
+      }
+    }
+
+    .metric-value-wrapper {
+      margin: 4px 0;
+
+      .metric-value {
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin: 0;
+        color: #212121;
+        letter-spacing: -0.5px;
+      }
+    }
+
+    .metric-footer {
+      font-size: 0.75rem;
+      color: rgba(0, 0, 0, 0.5);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

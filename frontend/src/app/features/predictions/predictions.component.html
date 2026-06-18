@@ -1,0 +1,57 @@
+<div class="predictions-viewport">
+  
+  <div class="predictions-header">
+    <h1 class="page-title">Algorithmic ML Matchup Predictions</h1>
+    <p class="page-subtitle">Real-time predictive analytics generated using serverless cloud-trained classifiers.</p>
+  </div>
+
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Evaluating XGBoost decision matrices...</p>
+  </div>
+
+  <div class="predictions-grid" *ngIf="!loading">
+    <mat-card class="prediction-analysis-card" *ngFor="let model of modelPredictions">
+      <mat-card-header>
+        <mat-card-title class="team-title-banner">{{ model.teamId }} Predictive Model</mat-card-title>
+        <mat-card-subtitle>Model Variant: {{ model.modelMetrics.algorithm }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content class="analysis-body">
+        <div class="probability-score-section">
+          <span class="score-label">Win Probability</span>
+          <h1 class="score-percentage" [style.color]="getProbabilityColor(model.winProbability)">
+            {{ model.winProbability * 100 | number:'1.0-0' }}%
+          </h1>
+          <span class="confidence-metric">Confidence Score: {{ model.modelMetrics.confidenceScore * 100 }}%</span>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="factors-table-section">
+          <h4 class="section-sub-title">Top Algorithmic Drivers</h4>
+          <table mat-table [dataSource]="model.modelMetrics.factors" class="mat-elevation-z0 structural-factors-table">
+            
+            <ng-container matColumnDef="factor">
+              <th mat-header-cell *matHeaderCellDef> Analysis Vector </th>
+              <td mat-cell *matCellDef="let element"> {{element.factor}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="impact">
+              <th mat-header-cell *matHeaderCellDef align="end"> Impact Weight </th>
+              <td mat-cell *matCellDef="let element" align="end">
+                <span class="impact-badge" [class]="element.impact.toLowerCase()">
+                  {{element.impact}}
+                </span>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div>

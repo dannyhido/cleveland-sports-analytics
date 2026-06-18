@@ -1,0 +1,25 @@
+<mat-card class="analytics-chart-card">
+  <mat-card-header>
+    <mat-card-title>{{ title }}</mat-card-title>
+    <mat-card-subtitle>{{ subtitle }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content class="chart-content-area">
+    <div class="loading-overlay" *ngIf="loading">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span class="loading-text">Parsing AWS Metrics...</span>
+    </div>
+
+    <div class="canvas-container" [class.hidden]="loading">
+      <canvas #chartCanvas width="400" height="200"></canvas>
+    </div>
+  </mat-card-content>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-actions align="end">
+    <button mat-button color="primary" [disabled]="loading">
+      <mat-icon>refresh</mat-icon> REFRESH DATA
+    </button>
+  </mat-card-actions>
+</mat-card>

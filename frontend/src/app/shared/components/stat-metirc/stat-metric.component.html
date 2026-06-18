@@ -1,0 +1,18 @@
+<mat-card class="stat-metric-card">
+  <mat-card-content class="metric-container">
+    <div class="metric-header">
+      <span class="metric-label">{{ label }}</span>
+      <mat-icon [class]="trendClass" [matTooltip]="trend + ' impact factor'">
+        {{ trendIcon }}
+      </mat-icon>
+    </div>
+
+    <div class="metric-value-wrapper">
+      <h2 class="metric-value">{{ value }}</h2>
+    </div>
+
+    <div class="metric-footer" *ngIf="description">
+      <span class="metric-description">{{ description }}</span>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,126 @@
+.predictions-viewport {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+
+  .predictions-header {
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 4px 0;
+    }
+    .page-subtitle {
+      font-size: 0.95rem;
+      color: #64748b;
+      margin: 0;
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    color: #64748b;
+    gap: 16px;
+  }
+
+  .predictions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 24px;
+
+    .prediction-analysis-card {
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      background: #ffffff;
+
+      .team-title-banner {
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+
+      .analysis-body {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding-top: 16px;
+
+        .probability-score-section {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 12px 0;
+
+          .score-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            font-weight: 600;
+          }
+
+          .score-percentage {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 8px 0;
+          }
+
+          .confidence-metric {
+            font-size: 0.75rem;
+            color: #94a3b8;
+          }
+        }
+
+        .factors-table-section {
+          .section-sub-title {
+            font-size: 0.85rem;
+            color: #475569;
+            margin: 0 0 12px 0;
+            font-weight: 600;
+          }
+
+          .structural-factors-table {
+            width: 100%;
+            background: transparent;
+
+            th {
+              font-size: 0.75rem;
+              color: #94a3b8;
+              text-transform: uppercase;
+            }
+
+            td {
+              font-size: 0.85rem;
+              color: #334155;
+              padding: 12px 0;
+            }
+
+            .impact-badge {
+              padding: 4px 8px;
+              border-radius: 4px;
+              font-size: 0.75rem;
+              font-weight: 600;
+
+              &.positive {
+                background: #f0fdf4;
+                color: #166534;
+              }
+              &.negative {
+                background: #fef2f2;
+                color: #991b1b;
+              }
+              &.neutral {
+                background: #f8fafc;
+                color: #475569;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

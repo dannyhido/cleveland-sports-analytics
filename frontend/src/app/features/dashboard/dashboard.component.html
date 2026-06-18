@@ -1,0 +1,63 @@
+<div class="dashboard-viewport-wrapper">
+  
+  <!-- Header Title Block -->
+  <div class="dashboard-header-block">
+    <h1 class="page-title">Cleveland Sports Overview</h1>
+    <p class="page-subtitle">Unified serverless data analytics feed for regional franchise performance.</p>
+  </div>
+
+  <!-- Global Error Banner Alert -->
+  <div class="error-alert-banner" *ngIf="errorMessage">
+    <mat-icon>error</mat-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Core Content Grid Layout (Hidden during primary structural load) -->
+  <ng-container *ngIf="!loading; else structuralLoadingState">
+    
+    <!-- Top Row: Core Team Metric Cards -->
+    <div class="metrics-dashboard-grid">
+      <app-stat-metric 
+        label="Browns Season Status" 
+        [value]="formatRecord('BROWNS')" 
+        description="AFC North Division Contender"
+        [trend]="(teamSnapshots['BROWNS']?.WinProbability ?? 0) >= 0.55 ? 'Positive' : 'Neutral'">
+      </app-stat-metric>
+
+      <app-stat-metric 
+        label="Cavaliers Season Status" 
+        [value]="formatRecord('CAVALIERS')" 
+        description="NBA Eastern Conference Core"
+        [trend]="(teamSnapshots['CAVALIERS']?.WinProbability ?? 0) >= 0.55 ? 'Positive' : 'Neutral'">
+      </app-stat-metric>
+
+      <app-stat-metric 
+        label="Guardians Season Status" 
+        [value]="formatRecord('GUARDIANS')" 
+        description="AL Central Standings Track"
+        [trend]="(teamSnapshots['GUARDIANS']?.WinProbability ?? 0) >= 0.55 ? 'Positive' : 'Neutral'">
+      </app-stat-metric>
+    </div>
+
+    <!-- Bottom Row: Unified ML Analytics Trends -->
+    <div class="charts-dashboard-section">
+      <app-chart-card 
+        title="Predictive Algorithmic Win Weights" 
+        subtitle="Comparing the next game win probability percentage variables generated via AWS Lambda models"
+        [loading]="loading"
+        [dataPoints]="aggregateWinProbabilities"
+        [labels]="chartLabels">
+      </app-chart-card>
+    </div>
+
+  </ng-container>
+
+  <!-- Loading State Template Placeholder -->
+  <ng-template #structuralLoadingState>
+    <div class="dashboard-loading-fallback">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Aggregating sports data pipelines from AWS DynamoDB...</p>
+    </div>
+  </ng-template>
+
+</div>
