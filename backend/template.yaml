@@ -1,0 +1,108 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Cleveland Sports Analytics Hub - Production Serverless Backend.
+  Optimized for ultra-low cost execution under AWS Free Tier.
+
+Globals:
+  Function:
+    Timeout: 15
+    MemorySize: 256
+    Runtime: python3.13
+    Environment:
+      Variables:
+        DYNAMODB_TABLE: !Ref SportsAnalyticsTable
+
+Resources:
+  ### -----------------------------------------
+  ### 1. DYNAMODB STORAGE LAYER
+  ### -----------------------------------------
+  SportsAnalyticsTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: ClevelandSportsAnalytics
+      PrimaryKey:
+        Name: PK # Partition Key (e.g., TEAM#BROWNS or ML#PREDICTION)
+        Type: String
+      # Note: SimpleTable defaults to Provisioned throughput (5 RCUs/5 WCUs) 
+      # which falls 100% inside the AWS 25 GB Free Tier.
+
+  ### -----------------------------------------
+  ### 2. API GATEWAY LAYER (HTTP API)
+  ### -----------------------------------------
+  SportsHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowMethods:
+          - GET
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+        AllowOrigins:
+          - 'http://localhost:4200' # For local Angular development
+          # Add your production CloudFront domain here later
+
+  ### -----------------------------------------
+  ### 3. LAMBDA COMPUTE LAYER
+  ### -----------------------------------------
+  GetTeamStatsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambdas/get_team_stats/
+      Handler: app.lambda_handler
+      Description: Retrieves dashboard and team historical analytics.
+      Events:
+        GetStats:
+          Type: HttpApi
+          Properties:
+            Path: /teams/{teamId}
+            Method: get
+            ApiId: !Ref SportsHttpApi
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SportsAnalyticsTable
+
+  GetPredictionsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambdas/get_predictions/
+      Handler: app.lambda_handler
+      Description: Exposes ML prediction modeling data for upcoming matchups.
+      Events:
+        GetPredictions:
+          Type: HttpApi
+          Properties:
+            Path: /predictions/{teamId}
+            Method: get
+            ApiId: !Ref SportsHttpApi
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SportsAnalyticsTable
+
+  ### -----------------------------------------
+  ### 4. CRON / ETL PIPELINE INGESTION
+  ### -----------------------------------------
+  SportsDataEtlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: etl/
+      Handler: fetch_sports_data.lambda_handler
+      Timeout: 300 # 5-minute timeout allocated for multi-API processing
+      MemorySize: 512 # Slightly extra memory for computational handling of large JSON payloads
+      Events:
+        DailySportsUpdate:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 6 * * ? *) # Fires automatically every day at 6:00 AM UTC
+            Name: ClevelandSportsDailyEtl
+            Enabled: true
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SportsAnalyticsTable
+
+Outputs:
+  HttpApiUrl:
+    Description: "Base URL of the Sports Analytics HTTP API Gateway endpoint"
+    Value: !Sub "https://${SportsHttpApi}.execute-api.${AWS::Region}.amazonaws.com"

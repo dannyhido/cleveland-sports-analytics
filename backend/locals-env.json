@@ -1,0 +1,17 @@
+{
+  "Parameters": {
+    "DYNAMODB_TABLE": "ClevelandSportsAnalytics"
+  },
+  "SportsDataEtlFunction": {
+    "DYNAMODB_TABLE": "ClevelandSportsAnalytics",
+    "AWS_SAM_LOCAL": "true"
+  },
+  "GetTeamStatsFunction": {
+    "DYNAMODB_TABLE": "ClevelandSportsAnalytics",
+    "AWS_SAM_LOCAL": "true"
+  },
+  "GetPredictionsFunction": {
+    "DYNAMODB_TABLE": "ClevelandSportsAnalytics",
+    "AWS_SAM_LOCAL": "true"
+  }
+}

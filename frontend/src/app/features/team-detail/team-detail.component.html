@@ -1,39 +1,54 @@
 <div class="team-detail-container">
-  
-  <div class="team-hero-banner" *ngIf="!loading && teamData">
-    <h1 class="team-name">Cleveland {{ teamId }}</h1>
-    <span class="league-tag">Franchise Data: {{ teamData.League }}</span>
-  </div>
 
-  <div class="loading-state" *ngIf="loading">
+  <!-- LOADING STATE -->
+  <div class="loading-state" *ngIf="!(teamData$ | async)">
     <mat-spinner diameter="40"></mat-spinner>
     <p>Parsing cloud team vectors...</p>
   </div>
 
-  <div class="team-dashboard-grid" *ngIf="!loading && teamData">
-    <app-stat-metric 
-      label="Current Record" 
-      [value]="teamData.CurrentRecord.wins + ' - ' + teamData.CurrentRecord.losses" 
-      description="Overall win/loss ledger"
-      [trend]="teamData.WinProbability >= 0.50 ? 'Positive' : 'Negative'">
-    </app-stat-metric>
+  <!-- MAIN CONTENT -->
+  <ng-container *ngIf="(teamData$ | async) as teamData">
 
-    <app-stat-metric 
-      label="Next Game Advantage" 
-      [value]="(teamData.WinProbability * 100 | number:'1.0-0') + '%'" 
-      description="Calculated matchup edge weight"
-      [trend]="teamData.WinProbability >= 0.55 ? 'Positive' : 'Neutral'">
-    </app-stat-metric>
-  </div>
+    <div class="team-hero-banner">
+      <h1 class="team-name">Cleveland {{ teamId }}</h1>
+      <span class="league-tag">
+        Franchise Data: {{ teamData?.League }}
+      </span>
+    </div>
 
-  <div class="team-charts-row" *ngIf="!loading && teamData">
-    <app-chart-card
-      [title]="teamId + ' Performance Vector'"
-      subtitle="Visualized trends across consecutive match tracking periods"
-      [loading]="loading"
-      [dataPoints]="chartData"
-      [labels]="chartLabels">
-    </app-chart-card>
+    <div class="team-dashboard-grid">
+
+<app-stat-metric 
+  label="Current Record" 
+  [value]="teamData?.CurrentRecord?.wins + ' - ' + teamData?.CurrentRecord?.losses" 
+  description="Overall win/loss ledger"
+  [trend]="(teamData?.WinProbability ?? 0) >= 0.50 ? 'Positive' : 'Negative'">
+</app-stat-metric>
+
+<app-stat-metric 
+  label="Next Game Advantage" 
+  [value]="((teamData?.WinProbability ?? 0) * 100 | number:'1.0-0') + '%'" 
+  description="Calculated matchup edge weight"
+  [trend]="(teamData?.WinProbability ?? 0) >= 0.55 ? 'Positive' : 'Neutral'">
+</app-stat-metric>
+
+    </div>
+
+    <div class="team-charts-row">
+      <app-chart-card
+        [title]="teamId + ' Performance Vector'"
+        subtitle="Visualized trends across consecutive match tracking periods"
+        [loading]="false"
+        [dataPoints]="chartData"
+        [labels]="chartLabels">
+      </app-chart-card>
+    </div>
+
+  </ng-container>
+
+  <!-- ERROR STATE -->
+  <div *ngIf="errorMessage" class="error-state">
+    {{ errorMessage }}
   </div>
 
 </div>

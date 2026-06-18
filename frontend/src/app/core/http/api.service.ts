@@ -10,61 +10,86 @@ import { environment } from '../../../environments/environment';
 })
 export class ApiService {
   private http = inject(HttpClient);
-
   private readonly baseUrl = environment.apiUrl;
 
   /**
-   * Fetches real-time team stats for the requested Cleveland franchise.
-   * Leverages shareReplay(1) to cache the stream and prevent redundant duplicate network requests.
+   * Normalize team IDs to match AWS backend (BROWNS, CAVALIERS, GUARDIANS)
+   */
+  private normalizeTeamId(teamId: string): string {
+    return teamId.toUpperCase();
+  }
+
+  /**
+   * Fetch team stats from AWS API Gateway
    */
   getTeamStats(teamId: 'browns' | 'cavaliers' | 'guardians'): Observable<TeamStatsResponse> {
-    return this.http.get<TeamStatsResponse>(`${this.baseUrl}/teams/${teamId}`).pipe(
-      shareReplay(1),
-      catchError((error: HttpErrorResponse) => {
-        console.warn(`[ApiService] Live endpoint failed. Falling back to local mock data for: ${teamId}`);
-        return of(this.getMockTeamStats(teamId));
-      })
-    );
+
+    const normalizedId = this.normalizeTeamId(teamId);
+
+    return this.http
+      .get<TeamStatsResponse>(`${this.baseUrl}/teams/${normalizedId}`)
+      .pipe(
+        shareReplay(1),
+        catchError((error: HttpErrorResponse) => {
+          console.warn(`[ApiService] API failed for ${teamId}. Using mock fallback.`);
+          return of(this.getMockTeamStats(teamId));
+        })
+      );
   }
 
   /**
-   * Retrieves specific ML model confidence and prediction metrics for upcoming matchups.
+   * Fetch ML prediction data from AWS API Gateway
    */
   getPredictionData(teamId: 'browns' | 'cavaliers' | 'guardians'): Observable<PredictionResponse> {
-    return this.http.get<PredictionResponse>(`${this.baseUrl}/predictions/${teamId}`).pipe(
-      catchError((error: HttpErrorResponse) => {
-        console.warn(`[ApiService] Live endpoint failed. Falling back to local mock predictions for: ${teamId}`);
-        return of(this.getMockPredictionData(teamId));
-      })
-    );
+
+    const normalizedId = this.normalizeTeamId(teamId);
+
+    return this.http
+      .get<PredictionResponse>(`${this.baseUrl}/predictions/${normalizedId}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.warn(`[ApiService] Prediction API failed for ${teamId}. Using mock fallback.`);
+          return of(this.getMockPredictionData(teamId));
+        })
+      );
   }
 
   /**
-   * Local Mock Data Generator for Team Stats MVP Testing
+   * MOCK: Team stats fallback (only used if AWS fails)
    */
   private getMockTeamStats(teamId: string): TeamStatsResponse {
     const isBrowns = teamId === 'browns';
     const isCavs = teamId === 'cavaliers';
-    
+
     return {
       PK: `TEAM#${teamId.toUpperCase()}`,
       UpdatedTimestamp: new Date().toISOString(),
       League: isBrowns ? 'NFL' : isCavs ? 'NBA' : 'MLB',
-      CurrentRecord: isBrowns ? { wins: 11, losses: 6 } : isCavs ? { wins: 52, losses: 30 } : { wins: 92, losses: 70 },
+      CurrentRecord: isBrowns
+        ? { wins: 11, losses: 6 }
+        : isCavs
+        ? { wins: 52, losses: 30 }
+        : { wins: 92, losses: 70 },
       RecentGames: [
-        { opponent: isBrowns ? 'Steelers' : isCavs ? 'Knicks' : 'Yankees', score: '24-17', result: 'W' },
-        { opponent: isBrowns ? 'Ravens' : isCavs ? 'Celtics' : 'White Sox', score: '14-20', result: 'L' },
-        { opponent: isBrowns ? 'Bengals' : isCavs ? 'Bucks' : 'Tigers', score: '31-10', result: 'W' }
+        { opponent: 'Team A', score: '24-17', result: 'W' },
+        { opponent: 'Team B', score: '14-20', result: 'L' },
+        { opponent: 'Team C', score: '31-10', result: 'W' }
       ],
       WinProbability: isBrowns ? 0.62 : isCavs ? 0.58 : 0.49
     };
   }
 
   /**
-   * Local Mock Data Generator for ML Predictions MVP Testing
+   * MOCK: Prediction fallback
    */
   private getMockPredictionData(teamId: string): PredictionResponse {
-    const probability = teamId === 'browns' ? 0.62 : teamId === 'cavaliers' ? 0.58 : 0.49;
+    const probability =
+      teamId === 'browns'
+        ? 0.62
+        : teamId === 'cavaliers'
+        ? 0.58
+        : 0.49;
+
     return {
       teamId: teamId.toUpperCase(),
       lastModelRun: new Date().toISOString(),
@@ -74,8 +99,8 @@ export class ApiService {
         confidenceScore: 0.84,
         factors: [
           { factor: 'Home Field Advantage', impact: 'Positive' },
-          { factor: 'Roster Health Index', impact: probability > 0.5 ? 'Positive' : 'Neutral' },
-          { factor: 'Opponent Head-to-Head History', impact: probability < 0.5 ? 'Negative' : 'Positive' }
+          { factor: 'Roster Health Index', impact: 'Positive' },
+          { factor: 'Opponent History', impact: 'Neutral' }
         ]
       }
     };

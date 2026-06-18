@@ -1,0 +1,2 @@
+# Extensible space for future ML/Data manipulation packages (e.g., numpy, scipy)
+# Standard SDK utilities are native to the lambda environment container.
