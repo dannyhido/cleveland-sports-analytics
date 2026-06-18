@@ -1,0 +1,73 @@
+<div class="page">
+  <header class="ph bad-ph">
+    <div class="hbg"></div>
+    <div class="phc">
+      <p class="section-label">Chapter 02</p>
+      <h1 class="pt">The<br><span class="ab">Bad</span></h1>
+      <p class="ps">Two playoff appearances in 26 years. 32 starting QBs. A masterclass in sustained mediocrity.</p>
+    </div>
+  </header>
+
+  <section class="sec alt">
+    <div class="con">
+      <p class="section-label">The Quarterback Problem</p>
+      <h2 class="sh">32 Starting QBs Since 1999</h2>
+      <p class="sd">No franchise in modern NFL history has cycled through starting quarterbacks faster.</p>
+      <div class="qg">
+        <div class="qc" *ngFor="let q of quarterbacks; let i = index" [style.animation-delay.ms]="i*30">
+          <span class="qn">{{i+1}}</span>
+          <span class="qname">{{q.name}}</span>
+          <span class="qy">{{q.years}}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="con">
+      <p class="section-label">By The Numbers</p>
+      <div class="sg">
+        <div class="sc" *ngFor="let s of badStats">
+          <div class="snum bad-c">{{s.value}}</div>
+          <div class="sl">{{s.label}}</div>
+          <div class="sctx">{{s.context}}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt">
+    <div class="con">
+      <p class="section-label">Win–Loss Record Since 1999</p>
+      <h2 class="sh">Season by Season</h2>
+      <div class="sb">
+        <div class="sr" *ngFor="let s of allSeasons">
+          <div class="sy">{{s.year}}</div>
+          <div class="sbi">
+            <div class="bw" [style.flex]="s.wins" [class.playoff]="s.note?.includes('Playoffs')">
+              <span *ngIf="s.wins >= 4">{{s.wins}}W</span>
+            </div>
+            <div class="bl" [style.flex]="s.losses">
+              <span *ngIf="s.losses >= 4">{{s.losses}}L</span>
+            </div>
+          </div>
+          <div class="snote" *ngIf="s.note">{{s.note}}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="con">
+      <p class="section-label">Coaching Carousel</p>
+      <h2 class="sh">24 Head Coaches</h2>
+      <div class="cg">
+        <div class="cc" *ngFor="let c of coaches">
+          <div class="cy">{{c.y}}</div>
+          <div class="cn">{{c.n}}</div>
+          <div class="cr">{{c.r}}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

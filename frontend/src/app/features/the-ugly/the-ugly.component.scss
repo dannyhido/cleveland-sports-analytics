@@ -1,0 +1,49 @@
+.page{min-height:100vh}
+.ph{min-height:60vh;display:flex;align-items:flex-end;position:relative;overflow:hidden}
+.ugly-ph .hbg{position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,60,0,.15) 0%,var(--grey-dark) 60%)}
+.phc{position:relative;z-index:1;padding:80px 40px;max-width:1280px;width:100%;margin:0 auto;animation:slideUp .6s ease both}
+.pt{font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,12vw,10rem);line-height:.88;margin:16px 0 20px}
+.au{color:var(--orange);animation:flicker 4s ease infinite 1s}
+.ps{font-size:clamp(.9rem,1.8vw,1.1rem);color:var(--text-muted);max-width:480px;line-height:1.65}
+.sec{padding:0}.alt{background:var(--grey-mid)}.fw{border-top:1px solid var(--border-subtle)}
+.con{max-width:1280px;margin:0 auto;padding:80px 40px}
+.sh{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,4rem);margin:12px 0 48px;color:var(--cream)}
+.sl{display:flex;flex-direction:column;gap:1px;background:var(--border-subtle)}
+.si{display:grid;grid-template-columns:64px 1fr;background:var(--grey-dark);transition:background .2s}
+.si:hover{background:var(--grey-mid)}
+.sr{display:flex;align-items:flex-start;justify-content:center;padding:32px 0 0;font-family:'Bebas Neue',sans-serif;font-size:2rem;color:rgba(255,60,0,.25);letter-spacing:.04em}
+.sb{padding:32px 32px 32px 0}
+.st{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.04em;color:var(--cream);margin-bottom:4px}
+.sy{font-family:'Roboto Mono',monospace;font-size:.65rem;color:var(--orange);letter-spacing:.1em;margin-bottom:12px}
+.sd{font-size:.88rem;color:var(--text-muted);line-height:1.65;max-width:640px;margin-bottom:20px}
+.pm{display:flex;align-items:center;gap:12px}
+.pl{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
+.pb{flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;max-width:200px}
+.pf{height:100%;background:linear-gradient(90deg,#FF9800,var(--orange));border-radius:2px}
+.pn{font-family:'Roboto Mono',monospace;font-size:.65rem;color:var(--orange);white-space:nowrap}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:rgba(255,60,0,.08)}
+.sc{padding:40px 32px;background:var(--grey-dark);transition:background .2s}.sc:hover{background:var(--grey-mid)}
+.snum{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);line-height:1}
+.ugly-c{color:var(--orange)}.slabel{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cream);margin:8px 0 4px}
+.sctx{font-size:.78rem;color:var(--text-muted);line-height:1.5}
+.cv{display:grid;grid-template-columns:auto 1fr;gap:64px;align-items:start}
+.cb{text-align:center}
+.cn{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,8vw,7rem);color:var(--orange);line-height:1;animation:flicker 6s ease infinite}
+.cl{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cream);margin:8px 0 4px}
+.cs{font-size:.75rem;color:var(--text-muted)}
+.fr{display:flex;gap:12px;padding:16px 0;border-bottom:1px solid var(--border-subtle);align-items:flex-start}
+.fr:last-child{border-bottom:none}
+.fi{color:var(--orange);font-size:.8rem;margin-top:2px;flex-shrink:0}
+.ft{font-size:.88rem;color:var(--cream);line-height:1.6}
+.wg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1px;background:var(--border-subtle)}
+.wc{padding:32px 24px;background:var(--grey-dark);transition:background .2s}.wc:hover{background:var(--grey-mid)}
+.wr{font-family:'Roboto Mono',monospace;font-size:.6rem;color:var(--orange);margin-bottom:12px}
+.wy{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--cream);line-height:1}
+.wrec{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--red-bad);letter-spacing:.04em;margin:4px 0}
+.wco{font-size:.78rem;color:var(--text-muted);margin-bottom:8px}
+.wn{font-size:.75rem;color:var(--orange)}
+.fi2{text-align:center;padding:80px 40px}
+.fq{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,4.5rem);color:var(--cream);margin-bottom:16px;letter-spacing:.02em}
+.fa{font-size:.8rem;color:var(--text-muted);letter-spacing:.08em}
+@media(max-width:768px){.cv{grid-template-columns:1fr;gap:32px}}
+@media(max-width:640px){.phc,.con{padding:60px 24px}.si{grid-template-columns:40px 1fr}.sb{padding:24px 16px 24px 0}}
