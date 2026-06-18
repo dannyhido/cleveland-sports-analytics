@@ -1,0 +1,83 @@
+<div class="page">
+  <header class="ph ugly-ph">
+    <div class="hbg"></div>
+    <div class="phc">
+      <p class="section-label">Chapter 03</p>
+      <h1 class="pt">The<br><span class="au">Ugly</span></h1>
+      <p class="ps">Some things can't just be called "bad." These moments deserve their own category.</p>
+    </div>
+  </header>
+
+  <section class="sec alt">
+    <div class="con">
+      <p class="section-label">Hall of Shame</p>
+      <h2 class="sh">Moments That Haunt Cleveland</h2>
+      <div class="sl">
+        <div class="si" *ngFor="let m of shameItems; let i = index">
+          <div class="sr">{{(i+1).toString().padStart(2,'0')}}</div>
+          <div class="sb">
+            <h3 class="st">{{m.title}}</h3>
+            <p class="sy">{{m.year}}</p>
+            <p class="sd">{{m.desc}}</p>
+            <div class="pm">
+              <span class="pl">Pain Level</span>
+              <div class="pb"><div class="pf" [style.width.%]="m.painLevel*10"></div></div>
+              <span class="pn">{{m.painLevel}}/10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="con">
+      <p class="section-label">The Numbers Don't Lie</p>
+      <div class="sg">
+        <div class="sc" *ngFor="let s of uglyStats">
+          <div class="snum ugly-c">{{s.value}}</div>
+          <div class="slabel">{{s.label}}</div>
+          <div class="sctx">{{s.context}}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt">
+    <div class="con">
+      <p class="section-label">The Contract That Haunts</p>
+      <h2 class="sh">Deshaun Watson Deal</h2>
+      <div class="cv">
+        <div class="cb"><div class="cn">$230M</div><div class="cl">Fully Guaranteed</div><div class="cs">Most in NFL history at signing</div></div>
+        <div class="cf">
+          <div class="fr" *ngFor="let f of watsonFacts">
+            <div class="fi">→</div><div class="ft">{{f}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="con">
+      <p class="section-label">Historical Record</p>
+      <h2 class="sh">Worst Seasons Since 1999</h2>
+      <div class="wg">
+        <div class="wc" *ngFor="let s of worstSeasons; let i = index">
+          <div class="wr">#{{i+1}}</div>
+          <div class="wy">{{s.year}}</div>
+          <div class="wrec">{{s.wins}}–{{s.losses}}</div>
+          <div class="wco">{{s.coach}}</div>
+          <div class="wn" *ngIf="s.note">{{s.note}}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec fw">
+    <div class="con"><div class="fi2">
+      <p class="fq">"But next year is our year."</p>
+      <p class="fa">— Every Browns fan, every year, since 1964</p>
+    </div></div>
+  </section>
+</div>

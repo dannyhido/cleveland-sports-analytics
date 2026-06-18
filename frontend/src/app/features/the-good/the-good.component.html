@@ -1,0 +1,76 @@
+<div class="page">
+  <header class="ph good-ph">
+    <div class="hbg"></div>
+    <div class="phc">
+      <p class="section-label">Chapter 01</p>
+      <h1 class="pt">The<br><span class="ag">Good</span></h1>
+      <p class="ps">Before Cleveland became a punchline, it was a powerhouse. Here's the proof.</p>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="con">
+      <p class="section-label">Championship History</p>
+      <h2 class="sh">When Cleveland Ruled Football</h2>
+      <div class="tl">
+        <div class="tli" *ngFor="let e of gloryEras">
+          <div class="tly">{{e.year}}</div>
+          <div class="tld"></div>
+          <div class="tlc"><h3 class="tlt">{{e.title}}</h3><p class="tldesc">{{e.desc}}</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt">
+    <div class="con">
+      <p class="section-label">By The Numbers</p>
+      <div class="sg">
+        <div class="sc" *ngFor="let s of goodStats">
+          <div class="sn good-c">{{s.value}}</div>
+          <div class="sl">{{s.label}}</div>
+          <div class="sctx">{{s.context}}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="con">
+      <p class="section-label">Hall of Fame</p>
+      <h2 class="sh">Legends Who Wore Orange</h2>
+      <div class="hg">
+        <div class="hc" *ngFor="let l of legends">
+          <div class="hn">#{{l.number}}</div>
+          <h3 class="hname">{{l.name}}</h3>
+          <p class="hp">{{l.pos}}</p>
+          <p class="hs">{{l.stat}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt">
+    <div class="con">
+      <p class="section-label">Best Seasons Since 1999</p>
+      <div class="dt"><table>
+        <thead><tr><th>Year</th><th>W</th><th>L</th><th>Win %</th><th>Coach</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let s of bestSeasons">
+            <td class="ty">{{s.year}}</td>
+            <td class="tw">{{s.wins}}</td>
+            <td class="tl2">{{s.losses}}</td>
+            <td>
+              <div class="wb">
+                <div class="wbf good-bar" [style.width.%]="pct(s)*100"></div>
+                <span>{{(pct(s)*100).toFixed(1)}}%</span>
+              </div>
+            </td>
+            <td class="tc">{{s.coach}}</td>
+            <td class="tn">{{s.note || '—'}}</td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+</div>
