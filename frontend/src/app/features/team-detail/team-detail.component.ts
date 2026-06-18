@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../core/http/api.service';
 import { TeamStatsResponse } from '../../core/models/sports-data.model';
 import { SharedModule } from '../../shared/shared.module';
-import { StatMetricComponent } from '../../shared/components/stat-metirc/stat-metric.component';
+import { StatMetricComponent } from '../../shared/components/stat-metric/stat-metric.component';
 import { ChartCardComponent } from '../../shared/components/chart-card/chart-card.component';
 
 @Component({
