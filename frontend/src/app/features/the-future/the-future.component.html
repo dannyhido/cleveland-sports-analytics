@@ -1,0 +1,15 @@
+<div class="sanders-hero">
+  <div class="image-frame">
+    <img src="assets/shedure.jpg" alt="shedure.jfif" />
+    <div class="image-overlay"></div>
+  </div>
+
+  <div class="stats-bar">
+    @for (stat of headlineStats; track stat.label) {
+      <div class="stat-block">
+        <span class="stat-value">{{ stat.value }}</span>
+        <span class="stat-label">{{ stat.label }}</span>
+      </div>
+    }
+  </div>
+</div>

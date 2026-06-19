@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
       <li><a routerLink="/the-good" routerLinkActive="active" class="good" (click)="m.set(false)">The Good</a></li>
       <li><a routerLink="/the-bad" routerLinkActive="active" class="bad" (click)="m.set(false)">The Bad</a></li>
       <li><a routerLink="/the-ugly" routerLinkActive="active" class="ugly" (click)="m.set(false)">The Ugly</a></li>
+      <li><a routerLink="/the-future" routerLinkActive="active" class="ugly" (click)="m.set(false)">The Future</a></li>
     </ul>
   </div>
 </nav>`,
