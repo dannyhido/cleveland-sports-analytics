@@ -40,3 +40,75 @@
 .hf { border-top: 1px solid var(--border-subtle); padding: 40px; text-align: center; }
 .fs { font-size: .8rem; color: var(--text-muted); margin-top: 8px; }
 @media(max-width:640px) { .hc,.pg { padding: 60px 24px; } .sd { display: none; } }
+
+
+.news-dashboard-section {
+  padding: 3rem 2rem;
+  display: flex;
+  justify-content: center;
+
+}
+
+.news-widget-box {
+  width: 100%;
+  max-width: 850px;
+  background: rgba(30, 30, 30, 0.75);
+  border: 1px solid #333333;
+  border-top: 3px solid #ff3c00; /* Distinct Browns orange top bar trim */
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #1a1a1a;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #2d2d2d;
+
+  .section-label {
+    margin: 0;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    color: #888888;
+  }
+
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    background-color: #00ff66; /* Glowing live wire update dot */
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00ff66;
+    animation: pulse 2s infinite;
+  }
+}
+
+/* Constrains the height so long RSS response chains stay internal */
+.widget-content-scroll {
+  max-height: 500px; 
+  overflow-y: auto;
+  padding: 1.5rem;
+  
+  /* Custom modern thin scrollbar track styling */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #1a1a1a;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #333333;
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #ff3c00;
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
