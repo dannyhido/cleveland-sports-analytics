@@ -1,15 +1,25 @@
+<h1 style="text-align: center; margin-top: 150px;">THE FUTURE</h1>
+
+
 <div class="sanders-hero">
+
+  
+  <!-- LEFT: IMAGE -->
   <div class="image-frame">
-    <img src="assets/shedure.jpg" alt="shedure.jfif" />
+    <img [src]="imagePath" alt="player image" />
     <div class="image-overlay"></div>
   </div>
 
+  <!-- RIGHT: STATS -->
   <div class="stats-bar">
     @for (stat of headlineStats; track stat.label) {
       <div class="stat-block">
-        <span class="stat-value">{{ stat.value }}</span>
+        <span class="stat-value">
+          {{ stat.displayValue }}
+        </span>
         <span class="stat-label">{{ stat.label }}</span>
       </div>
     }
   </div>
+
 </div>

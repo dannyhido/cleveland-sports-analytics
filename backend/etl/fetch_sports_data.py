@@ -14,12 +14,8 @@ dynamodb = boto3.resource('dynamodb')
 TABLE_NAME = os.environ.get('DYNAMODB_TABLE', 'ClevelandSportsAnalytics')
 table = dynamodb.Table(TABLE_NAME)
 
-# Real public ESPN CDN endpoints for Cleveland sports teams
-ESPN_ENDPOINTS = {
-    "BROWNS": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/cle",
-    "CAVALIERS": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/cle",
-    "GUARDIANS": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/cle"
-}
+# Dedicated ESPN NFL news endpoint filtered for the Cleveland Browns (Team ID: 5)
+BROWNS_NEWS_ENDPOINT = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/news?team=5"
 
 
 def convert_floats(obj):
@@ -37,7 +33,7 @@ def convert_floats(obj):
 
 def fetch_espn_data(url: str) -> dict:
     """
-    Executes an HTTPS fetch to retrieve live data from ESPN's public CDN endpoints.
+    Executes an HTTPS fetch to retrieve live data from ESPN's public endpoints.
     """
     try:
         req = urllib.request.Request(
@@ -54,136 +50,75 @@ def fetch_espn_data(url: str) -> dict:
         return {}
 
 
-def extract_record_from_espn(espn_payload: dict) -> dict:
+def extract_browns_news(espn_payload: dict) -> list:
     """
-    Safely navigates ESPN's payload tree to pull the team's wins and losses record.
+    Parses the articles array from the ESPN news payload into a scannable list structure.
     """
+    parsed_articles = []
     try:
-        team_data = espn_payload.get('team', {})
-        record_items = team_data.get('record', {}).get('items', [])
-
-        if record_items:
-            stats = record_items[0].get('stats', [])
-            wins = 0
-            losses = 0
-
-            for stat in stats:
-                if stat.get('name') == 'wins':
-                    wins = int(stat.get('value', 0))
-                elif stat.get('name') == 'losses':
-                    losses = int(stat.get('value', 0))
-
-            return {"wins": wins, "losses": losses}
+        articles = espn_payload.get('articles', [])
+        
+        for article in articles:
+            # Safely navigate nested link structure
+            links = article.get('links', {})
+            web_link = links.get('web', {}) if isinstance(links, dict) else {}
+            web_url = web_link.get('href', 'N/A') if isinstance(web_link, dict) else 'N/A'
+            
+            parsed_articles.append({
+                "headline": article.get('headline', 'No Title'),
+                "description": article.get('description', 'No description available.'),
+                "published": article.get('published', 'Unknown Time'),
+                "link": web_url
+            })
+            
     except Exception as e:
-        logger.warning(f"Error parsing record from ESPN payload: {str(e)}")
-
-    return {"wins": 0, "losses": 0}
-
-
-def extract_recent_games(espn_payload: dict) -> list:
-    """
-    Extracts scheduled or recent game details from the ESPN payload structure.
-    """
-    recent_games = []
-    try:
-        team_data = espn_payload.get('team', {})
-        next_event = team_data.get('nextEvent', [])
-
-        if next_event:
-            event = next_event[0]
-            competitions = event.get('competitions', [])
-
-            if competitions:
-                competitors = competitions[0].get('competitors', [])
-                opponent_name = "Opponent"
-
-                for competitor in competitors:
-                    if competitor.get('team', {}).get('id') != team_data.get('id'):
-                        opponent_name = competitor.get(
-                            'team', {}
-                        ).get('displayName', 'Opponent')
-
-                recent_games.append({
-                    "opponent": opponent_name,
-                    "score": "TBD",
-                    "result": "W"
-                })
-
-    except Exception as e:
-        logger.warning(f"Error parsing game schedules from ESPN payload: {str(e)}")
-
-    if not recent_games:
-        recent_games = [{
-            "opponent": "Upcoming Matchup",
-            "score": "Scheduled",
-            "result": "W"
-        }]
-
-    return recent_games
-
-
-def calculate_ml_win_probability(record: dict) -> float:
-    """
-    Algorithmic predictor: Computes matchup edge weights utilizing historical
-    win ratios along with dynamic factors.
-    """
-    wins = record.get("wins", 0)
-    losses = record.get("losses", 0)
-    total_games = wins + losses
-
-    if total_games == 0:
-        return 0.50
-
-    base_ratio = wins / total_games
-    adjusted_probability = base_ratio * 0.9 + 0.05
-    return round(max(0.15, min(0.85, adjusted_probability)), 2)
+        logger.warning(f"Error parsing news articles from ESPN payload: {str(e)}")
+        
+    return parsed_articles
 
 
 def lambda_handler(event, context):
     """
-    Execution handler triggered daily or via API requests to hydrate DynamoDB state.
+    Execution handler triggered to hydrate DynamoDB state with latest Browns news.
     """
-    logger.info("Executing Cleveland Sports Analytics Hub Real Ingestion Pipeline.")
-    processed_count = 0
-
-    for team_key, endpoint in ESPN_ENDPOINTS.items():
-        logger.info(f"Processing live ESPN payload ingestion for franchise: {team_key}")
-
-        raw_payload = fetch_espn_data(endpoint)
-        if not raw_payload:
-            logger.error(f"Empty payload parsed. Skipping update for {team_key}.")
-            continue
-
-        record = extract_record_from_espn(raw_payload)
-        recent_games = extract_recent_games(raw_payload)
-        win_probability = calculate_ml_win_probability(record)
-
-        db_item = {
-            'PK': f"TEAM#{team_key.upper()}",
-            'UpdatedTimestamp': datetime.utcnow().isoformat(),
-            'League': (
-                "NFL" if team_key == "BROWNS"
-                else "NBA" if team_key == "CAVALIERS"
-                else "MLB"
-            ),
-            'CurrentRecord': record,
-            'RecentGames': recent_games,
-            'WinProbability': win_probability
+    logger.info("Executing Cleveland Browns News Ingestion Pipeline.")
+    
+    # Fetch live data
+    raw_payload = fetch_espn_data(BROWNS_NEWS_ENDPOINT)
+    if not raw_payload:
+        logger.error("Empty or invalid news payload parsed from ESPN. Aborting update.")
+        return {
+            'statusCode': 500,
+            'body': json.dumps("ETL failed. Empty payload received from source.")
         }
 
-        try:
-            safe_item = convert_floats(db_item)
-            table.put_item(Item=safe_item)
-            logger.info(f"Successfully updated real stats record in DynamoDB for {team_key}.")
-            processed_count += 1
-        except Exception as dbe:
-            logger.error(f"DynamoDB transaction failed for {team_key}: {str(dbe)}")
-
-    status = 200 if processed_count == 3 else 500
-
-    return {
-        'statusCode': status,
-        'body': json.dumps(
-            f"ETL completed. Ingested {processed_count}/3 Cleveland franchises."
-        )
+    # Extract structured news feed
+    latest_news = extract_browns_news(raw_payload)
+    
+    # Define primary keys and payload body
+    db_item = {
+        'PK': "TEAM#BROWNS",
+        'SK': "METRIC#NEWS",  # Explicit sort key if utilizing a composite key pattern
+        'UpdatedTimestamp': datetime.utcnow().isoformat(),
+        'League': "NFL",
+        'LatestNews': latest_news,
+        'ArticleCount': len(latest_news)
     }
+
+    try:
+        # Prevent float mapping data type exceptions in DynamoDB
+        safe_item = convert_floats(db_item)
+        table.put_item(Item=safe_item)
+        logger.info("Successfully updated live news feed in DynamoDB for BROWNS.")
+        
+        return {
+            'statusCode': 200,
+            'body': json.dumps(f"ETL completed successfully. Ingested {len(latest_news)} Browns headlines.")
+        }
+        
+    except Exception as dbe:
+        logger.error(f"DynamoDB transaction failed for BROWNS news write: {str(dbe)}")
+        return {
+            'statusCode': 500,
+            'body': json.dumps("Internal database write failure.")
+        }
