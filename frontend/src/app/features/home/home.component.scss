@@ -4,7 +4,7 @@
 .hero-orb { position: absolute; right: -5%; top: 50%; transform: translateY(-50%); width: min(55vw,600px); height: min(55vw,600px); border-radius: 50%; background: radial-gradient(circle at 35% 35%, var(--brown-mid), var(--grey-dark)); border: 2px solid rgba(255,60,0,.12); opacity: .3; }
 .scanline { position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,60,0,.15), transparent); animation: scanline 8s linear infinite; pointer-events: none; }
 .hc { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 80px 40px; animation: slideUp .7s ease both; }
-.ht { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5rem,14vw,12rem); line-height: .88; margin: 20px 0 24px; display: flex; flex-direction: column; }
+.ht { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 7vw, 6rem); line-height: .88; margin: 20px 0 24px; display: flex; flex-direction: column; }
 .ht .o { color: var(--orange); animation: flicker 6s ease infinite 2s; }
 .hs { font-size: clamp(1rem,2vw,1.2rem); color: var(--cream); margin-bottom: 40px; line-height: 1.6; max-width: 480px; }
 .muted { color: var(--text-muted); }
@@ -111,4 +111,53 @@
   0% { opacity: 0.4; }
   50% { opacity: 1; }
   100% { opacity: 0.4; }
+}
+
+.hero {
+  min-height: calc(100vh - 64px);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px; /* tighter than 1280 */
+  margin: 0 auto;
+  padding: 60px 32px;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(320px, 420px);
+  gap: 32px;
+  align-items: start;
+}
+
+/* LEFT SIDE (your existing content) */
+.hc {
+  animation: slideUp .7s ease both;
+}
+
+/* RIGHT SIDE (news panel) */
+.hero-news {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* make news panel fit hero */
+.hero-news .news-widget-box {
+  max-height: 70vh;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-news {
+    justify-content: stretch;
+  }
 }

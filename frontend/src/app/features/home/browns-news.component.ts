@@ -8,7 +8,7 @@ import { BrownsNewsService, BrownsArticle } from './browns-news.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './browns-news.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./browns-news.component.scss']
 })
 export class BrownsNewsComponent implements OnInit {
   private newsService = inject(BrownsNewsService);

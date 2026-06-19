@@ -1,0 +1,179 @@
+// Cleveland Browns News Feed
+// ============================
+
+$browns-brown: #311d00;
+$browns-orange: #ff3c00;
+$bg-dark: #0f0d0b;
+$card-bg: #1a1613;
+$card-border: rgba(255, 60, 0, 0.15);
+$text-primary: #f5f1ea;
+$text-secondary: #a89e8f;
+
+@mixin transition($props: all, $duration: 0.25s) {
+  transition: $props $duration cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.news-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: $text-primary;
+
+  h1 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, $browns-orange, #ff7a3c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    border-bottom: 3px solid $browns-brown;
+    padding-bottom: 1rem;
+  }
+}
+
+.error-banner {
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  color: #fca5a5;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.article-card {
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+  @include transition(transform background-color box-shadow);
+
+  // subtle top accent line
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, $browns-orange, transparent);
+    opacity: 0;
+    @include transition(opacity);
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px -10px rgba(255, 60, 0, 0.25);
+    border-color: rgba(255, 60, 0, 0.35);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: $text-primary;
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: $text-secondary;
+    margin: 0;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  a {
+    color: $browns-orange;
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-decoration: none;
+    align-self: flex-start;
+    @include transition(gap color, 0.2s);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+
+    &:hover {
+      color: #ff7a3c;
+      gap: 0.5rem;
+    }
+  }
+}
+
+.meta-date {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(168, 158, 143, 0.7);
+}
+
+.empty-state,
+.loading-spinner {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: $text-secondary;
+  font-size: 0.95rem;
+  font-style: italic;
+  grid-column: 1 / -1;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+
+  &::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 60, 0, 0.25);
+    border-top-color: $browns-orange;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive tweaks
+@media (max-width: 480px) {
+  .news-container {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .articles-grid {
+    grid-template-columns: 1fr;
+  }
+}
